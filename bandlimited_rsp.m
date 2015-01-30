@@ -1,4 +1,4 @@
-function [resampled_signal, t_new] = bandlimited_rsp (original_signal, sample_rate, sample_values)
+function [resampled_signal, t_new] = bandlimited_rsp (original_signal, sample_rate, sample_values, X)
 %Function bandlimited interpolation
 %
 %This function interpolates the new sample values of the input signal by
@@ -42,7 +42,7 @@ for idx = 1:length(sample_values(1:n));
     else
         value = 0;
         %calculate 5th zero crossing
-        cutoff = 5/sample_rate;
+        cutoff = X/sample_rate;
         
         % first sample lying within the range of the cutoff sinc
         n_begin = 1;
