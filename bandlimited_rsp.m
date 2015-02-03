@@ -41,7 +41,7 @@ for idx = 1:length(sample_values(1:n));
     % cut off at its 5th zero crossing
     else
         value = 0;
-        %calculate 5th zero crossing
+        %calculate X-th zero crossing
         cutoff = X/sample_rate;
         
         % first sample lying within the range of the cutoff sinc
