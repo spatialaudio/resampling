@@ -1,4 +1,4 @@
-function [resampled_signal, t_new] = bandlimited_rsp (original_signal, sample_rate, sample_values, X)
+function [resampled_signal, t_new, idx] = bandlimited_rsp (original_signal, sample_rate, sample_values, X)
 %Function bandlimited interpolation
 %
 %This function interpolates the new sample values of the input signal by
@@ -14,23 +14,29 @@ function [resampled_signal, t_new] = bandlimited_rsp (original_signal, sample_ra
 %           X: Zero crossing to cutoff the signal
 %
 %Output:    Resampled signal
-
+%           The time values of the resampled signal
+%           The idx of the first resampled value
 
 dt = 1 / sample_rate;         % calculate sampling interval
 N = length(original_signal);       % calculate number of points
 time_input = (0:dt:(N-1)*dt);   % time = all points between 0 until the end of the Signal
 
 % for loop to interpolate the value to every sample
-n = length(sample_values);
-while sample_values(n) > time_input(end)
-    n = n-1;
+n_b = 1;
+while sample_values(n_b) < time_input(1)
+    n_b = n_b + 1;
 end
+n_e = length(sample_values);
+while sample_values(n_e) > time_input(end)
+    n_e = n_e - 1;
+end
+% 
+% sample_values = sample_values(1:n_e);
+resampled_signal = sample_values;
+t_new = sample_values;
 
-sample_values = sample_values(1:n);
-resampled_signal = sample_values(1:n);
-t_new = sample_values(1:n);
 
-for idx = 1:length(sample_values(1:n));
+for idx = n_b:n_e
     
     % check if the sample position is one of the original sample positions
     if ~mod(sample_values(idx),dt)
@@ -46,28 +52,28 @@ for idx = 1:length(sample_values(1:n));
         
         % first sample lying within the range of the cutoff sinc
         n_begin = 1;
-        while  time_input(n_begin) <= sample_values(idx)-cutoff
+        while  time_input(n_begin) < sample_values(idx)-cutoff
             n_begin = n_begin + 1;
         end
 
         
         % last sample lying within the range of the cutoff sinc
         n_end = N;
-        while time_input(n_end) >= sample_values(idx)+ cutoff
+        while time_input(n_end) > sample_values(idx)+ cutoff
             n_end = n_end - 1;
         end
  
        
         % add up all the sample_points within the range of the cutoff sinc
         % in order to interpolate the value
-        for n = n_begin:n_end
-            value = value + original_signal(n) * sinc(sample_rate*(sample_values(idx) - time_input(n)));
+        for n_idx = n_begin:n_end
+            value = value + original_signal(n_idx) * sinc(sample_rate*(sample_values(idx) - time_input(n_idx)));
         end
         resampled_signal(idx) = value;
     end
 end
-
-% plot(time_input,original_signal, sample_values, resampled_signal)
-
+resampled_signal = resampled_signal(n_b:n_e);
+t_new = t_new(n_b:n_e);
+idx = n_b;
 
         
