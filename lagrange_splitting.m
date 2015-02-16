@@ -1,4 +1,4 @@
-function [filtered_signal, x_filtered] = lagrange_splitting(signal_in, sample_rate, x_new, N)
+function [filtered_signal, x_filtered, idx] = lagrange_splitting(signal_in, sample_rate, x_new, N)
 %Funktion Interpolation with a Lagrange Filter
 %
 %This function interpolates the values for the new (fractional) sample by
@@ -15,6 +15,7 @@ function [filtered_signal, x_filtered] = lagrange_splitting(signal_in, sample_ra
 %
 %Output:    filtered signal
 %           the points that have been interpolated
+%           The idx of the first resampled value
 
 % calculate positions of the samples of the input signal    
 dt = 1 / sample_rate;
@@ -89,3 +90,4 @@ for idx = 1:length(x_samples)
 end
 
 x_filtered = x_new(x_begin:x_end);
+idx = x_begin;

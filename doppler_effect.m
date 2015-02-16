@@ -16,18 +16,12 @@ function [sample_position, prefactor] = doppler_effect(v_s, c, l_min, l_0, t)
 %           their correspondending prefactor
 
 
-%(vs, d_min, d0, c, t)
-% vs = 60;
-% d_min = 10;
-% c = 300;
-% t = 0:20;
-
 if l_min == 0
     tau = (( l_0 + v_s .* t ) .* ( v_s - c )) ./ ( c^2 - v_s^2 );
 else
-    l_x = sqrt(l_0^2-l_min^2);
-    tau = (( -l_x - v_s .* t ).* v_s + sqrt(( l_x + v_s .* t).^2 .* c^2 + l_min^2 * ( c^2 - v_s^2 ))) ./ (c^2 - v_s^2);
+    tau = (( l_0 - v_s .* t ).* v_s + sqrt(( -l_0 + v_s .* t).^2 .* c^2 + l_min^2 * ( c^2 - v_s^2 ))) ./ (c^2 - v_s^2);
 end
+
 
 sample_position = t - tau;
 
